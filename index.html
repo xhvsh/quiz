@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz Generator</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <div class="container generator">
+      <h1>Generate your quiz!</h1>
+      <form class="options">
+        <div class="opt">
+          <p>Number of questions: (min: 10, max: 50)</p>
+          <input type="number" min="10" max="50" step="1" value="10" class="number-input" />
+          <span class="err-msg hidden">Number should be between 10 and 50!</span>
+        </div>
+        <div class="opt">
+          <p>Category:</p>
+          <select class="category-input"></select>
+        </div>
+        <div class="opt">
+          <p>Difficulty:</p>
+          <select class="difficulty-input">
+            <option value="random">Random</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        <div class="btns">
+          <button type="button" class="generate">Generate quiz!</button>
+          <button type="reset" class="reset">Reset</button>
+        </div>
+      </form>
+    </div>
+    <div class="container quiz hidden">
+      <h1>Quiz generated, Good luck!</h1>
+    </div>
+    <div class="container-smol result hidden">
+      <h1>Quiz results:</h1>
+      <div class="percent">
+        <svg>
+          <circle cx="95" cy="95" r="95"></circle>
+          <circle cx="95" cy="95" r="95"></circle>
+        </svg>
+        <div class="number">68<span>%</span></div>
+      </div>
+      <button type="button" class="again">Generate another quiz!</button>
+    </div>
+  </body>
+</html>
