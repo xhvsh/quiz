@@ -74,15 +74,15 @@ generateBtn.addEventListener('click', () => {
               document.querySelector('.quiz').insertAdjacentHTML(
                 'beforeend',
                 `
-                <div class="question question${i}">
+                <div class="question question${i}" id="question">
                   <div class="difficulty ${x.difficulty}"></div>
                   <p>Category: ${x.category}</p>
                   <h3>${x.question}</h3>
                   <div class="answers">
-                    <div class="answer answer0-${i}" data-correct="${correctAnswer === allAnswers[0]}">${allAnswers[0]}</div>
-                    <div class="answer answer1-${i}" data-correct="${correctAnswer === allAnswers[1]}">${allAnswers[1]}</div>
-                    <div class="answer answer2-${i}" data-correct="${correctAnswer === allAnswers[2]}">${allAnswers[2]}</div>
-                    <div class="answer answer3-${i}" data-correct="${correctAnswer === allAnswers[3]}">${allAnswers[3]}</div>
+                    <div class="answer answer0-${i}" data-correct="${correctAnswer === allAnswers[0]}" q="multiple">${allAnswers[0]}</div>
+                    <div class="answer answer1-${i}" data-correct="${correctAnswer === allAnswers[1]}" q="multiple">${allAnswers[1]}</div>
+                    <div class="answer answer2-${i}" data-correct="${correctAnswer === allAnswers[2]}" q="multiple">${allAnswers[2]}</div>
+                    <div class="answer answer3-${i}" data-correct="${correctAnswer === allAnswers[3]}" q="multiple">${allAnswers[3]}</div>
                   </div>
                 </div>
                 `
@@ -93,42 +93,110 @@ generateBtn.addEventListener('click', () => {
               document.querySelector('.quiz').insertAdjacentHTML(
                 'beforeend',
                 `
-                <div class="question question${i}">
+                <div class="question question${i}" id="question">
                   <div class="difficulty ${x.difficulty}"></div>
                   <p>Category: ${x.category}</p>
                   <h3>${x.question}</h3>
                   <div class="answers">
-                    <div class="answer answerTrue-${i}" data-correct="${correctAnswer === 'True'}">True</div>
-                    <div class="answer answerFalse-${i}" data-correct="${correctAnswer === 'False'}">False</div>
+                    <div class="answer answerTrue-${i}" data-correct="${correctAnswer === 'True'}" q="boolean">True</div>
+                    <div class="answer answerFalse-${i}" data-correct="${correctAnswer === 'False'}" q="boolean">False</div>
                   </div>
                 </div>
                 `
               );
             }
+            document.querySelector(`.question${i}`).classList.add('hidden');
+            document.querySelector(`.question0`).classList.remove('hidden');
           }
+          document.querySelector('.current-question').innerHTML = `Question 1/${totalQuestions}`;
           document.querySelectorAll('[data-correct]').forEach((e) => {
             e.addEventListener('click', () => {
+              let user = e.textContent;
+              let correct = document.querySelector('[data-correct="true"]').textContent;
+
               if (e.getAttribute(`data-correct`) === 'true') {
                 answeredQuestions++;
                 correctAnswersCount++;
+
+                if (e.getAttribute(`q`) === 'boolean') {
+                  document.querySelector('[q]').remove();
+                  document.querySelector('[q]').remove();
+                } else if (e.getAttribute(`q`) === 'multiple') {
+                  document.querySelector('[q]').remove();
+                  document.querySelector('[q]').remove();
+                  document.querySelector('[q]').remove();
+                  document.querySelector('[q]').remove();
+                }
               } else {
                 answeredQuestions++;
+
+                if (e.getAttribute(`q`) === 'boolean') {
+                  document.querySelector('[q]').remove();
+                  document.querySelector('[q]').remove();
+                } else if (e.getAttribute(`q`) === 'multiple') {
+                  document.querySelector('[q]').remove();
+                  document.querySelector('[q]').remove();
+                  document.querySelector('[q]').remove();
+                  document.querySelector('[q]').remove();
+                }
               }
-              e.closest('.question').classList.add('hidden');
-              if (answeredQuestions === totalQuestions) {
-                let percent = (correctAnswersCount / answeredQuestions) * 100;
-
-                const circleElement = document.querySelector('circle:nth-child(2)');
-                circleElement.style.strokeDashoffset = `calc(600 - (600 * ${parseInt(percent)}) / 100)`;
-                document.querySelector('.number').innerHTML = `${parseInt(percent)}<span>%</span>`;
-
-                document.querySelector('.quiz').classList.add('hidden');
-                document.querySelector('.result').classList.remove('hidden');
-
-                document.querySelectorAll('.question').forEach((e) => {
-                  e.remove();
-                });
+              if (user === correct) {
+                document.querySelector('.answers').insertAdjacentHTML(
+                  'beforeend',
+                  `
+                  <div class="answered correct">Your answer: ${user}</div>
+                  <div class="answered correct">Correct answer: ${correct}</div>
+                  `
+                );
+              } else {
+                document.querySelector('.answers').insertAdjacentHTML(
+                  'beforeend',
+                  `
+                  <div class="answered wrong">Your answer:<br>${user}</div>
+                  <div class="answered correct">Correct answer:<br>${correct}</div>
+                  `
+                );
               }
+
+              setTimeout(() => {
+                document.querySelector('#question').remove();
+
+                if (answeredQuestions === totalQuestions) {
+                  console.log('answered all questions');
+                } else {
+                  document.querySelector(`.question${answeredQuestions}`).classList.remove('hidden');
+                }
+
+                // console.log(e.closest('.question'));
+                // e.closest('.question').classList.add('hidden');
+                document.querySelector('.current-question').innerHTML = `Question ${answeredQuestions + 1}/${totalQuestions}`;
+
+                if (answeredQuestions === totalQuestions) {
+                  let percent = (correctAnswersCount / answeredQuestions) * 100;
+
+                  const circleElement = document.querySelector('circle:nth-child(2)');
+
+                  circleElement.style.strokeDashoffset = `calc(600 - (600 * ${parseInt(percent)}) / 100)`;
+                  document.querySelector('.number').innerHTML = `${parseInt(percent)}<span>%</span>`;
+                  document.querySelector('.result-info').innerHTML = `Category: ${category.options[category.selectedIndex].text}<br>Difficulty: ${activeDifficulty}`;
+
+                  if (parseInt(percent) <= 33) {
+                    circleElement.classList.add('r1');
+                  } else if (parseInt(percent) > 33 && parseInt(percent) < 66) {
+                    circleElement.classList.add('r2');
+                  } else if (parseInt(percent) <= 66) {
+                    circleElement.classList.add('r3');
+                  }
+
+                  document.querySelector('.quiz').classList.add('hidden');
+                  document.querySelector('.result').classList.remove('hidden');
+
+                  document.querySelectorAll('.question').forEach((e) => {
+                    e.remove();
+                  });
+                  document.querySelector('.current-question').innerHTML = `Question 1/${totalQuestions}`;
+                }
+              }, 3000);
             });
           });
 
@@ -159,4 +227,8 @@ resetBtn.addEventListener('click', () => {
 generateNew.addEventListener('click', () => {
   document.querySelector('.result').classList.add('hidden');
   document.querySelector('.generator').classList.remove('hidden');
+
+  document.querySelector('circle:nth-child(2)').classList.remove('r1');
+  document.querySelector('circle:nth-child(2)').classList.remove('r2');
+  document.querySelector('circle:nth-child(2)').classList.remove('r3');
 });

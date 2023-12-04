@@ -156,7 +156,8 @@ button:hover {
   flex-wrap: wrap;
   gap: 10px;
 }
-.answer {
+.answer,
+.answered {
   position: relative;
   width: 48%;
   display: flex;
@@ -164,12 +165,12 @@ button:hover {
   background: #333;
   padding: 10px 20px;
   border-radius: 5px;
-  cursor: pointer;
   transition: all 0.3s ease;
   z-index: 1;
   font-weight: 600;
 }
-.answer::after {
+.answer::after,
+.answered::after {
   content: '';
   position: absolute;
   top: 0;
@@ -177,10 +178,22 @@ button:hover {
   height: 100%;
   width: 5px;
   border-radius: 5px 0 0 5px;
+  z-index: -1;
+}
+.answer {
+  cursor: pointer;
+}
+@media (max-width: 360px) {
+  .answers,
+  .answer,
+  .answered {
+    width: 100%;
+  }
+}
+.answer::after {
   background: #008a9f;
   box-shadow: 3px 0 10px #008a9f;
   transition: all 0.3s ease;
-  z-index: -1;
 }
 .answer:hover::after {
   width: 100%;
@@ -190,6 +203,9 @@ button:hover {
 
 .percent {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   aspect-ratio: 1/1;
 }
@@ -203,7 +219,6 @@ circle {
   height: 200px;
   fill: none;
   stroke-width: 10;
-  stroke: #ddd;
   transform: translate(5px, 5px);
   stroke-dasharray: 600;
   stroke-dashoffset: 600;
@@ -216,7 +231,6 @@ circle:nth-child(1) {
 }
 circle:nth-child(2) {
   stroke-dashoffset: calc(600 - (600 * 50) / 100);
-  stroke: #ddd;
   opacity: 1;
   animation: animate-circle 1s linear;
 }
@@ -229,6 +243,16 @@ circle:nth-child(2) {
     opacity: 1;
   }
 }
+.r1 {
+  stroke: var(--hard);
+}
+.r2 {
+  stroke: var(--medium);
+}
+.r3 {
+  stroke: var(--easy);
+}
+
 .number {
   position: absolute;
   top: 0;
@@ -288,6 +312,16 @@ circle:nth-child(2) {
   margin-top: 5px;
   font-weight: 700;
 }
+
+.correct::after {
+  background: var(--easy);
+  box-shadow: 3px 0 10px var(--easy);
+}
+.wrong::after {
+  background: var(--hard);
+  box-shadow: 3px 0 10px var(--hard);
+}
+
 .hidden {
   display: none;
 }
